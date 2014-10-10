@@ -1,8 +1,8 @@
 {
   "name": "p4-oo",
   "version": "1.0.2",
-  "description": "A small utility library for dealing with Perforce",
-  "main": "p4.js",
+  "description": "A small object-oriented utility library for dealing with Perforce",
+  "main": "index.js",
   "author": "Greg Cochard <greg.cochard@gmail.com> (https://gregcochard.com)",
   "license": "MIT",
   "repository": {
@@ -15,5 +15,16 @@
   "keywords": [
     "p4",
     "perforce"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^0.8.2",
+    "eslint-plugin-mocha": "^0.2.0",
+    "istanbul": "^0.3.2",
+    "mocha": "^1.21.4",
+    "rewire": "^2.1.0",
+    "underscore": "^1.7.0"
+  },
+  "scripts": {
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha"
+  }
 }
