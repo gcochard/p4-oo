@@ -90,20 +90,23 @@ Stats a file and returns a JSON object with the file's properties.
 Should look like the following:
 
 ```json
-{ depotFile: '//depot/output.css',
-clientFile: '/Users/username/workspace/output.css',
-isMapped: true,
-headAction: 'edit',
-headType: 'xtext',
-headTime: '1410890900',
-headRev: '25',
-headChange: '1184',
-headModTime: '1410890778',
-haveRev: '25',
-other: 
- [ { Open: 'user@other_workspace',
-       Action: 'edit',
-       Change: '1189' } ] }
+{ 
+    "depotFile": "//depot/output.css",
+    "clientFile": "/Users/username/workspace/output.css",
+    "isMapped": true,
+    "headAction": 'edit',
+    "headType": 'xtext',
+    "headTime": '1410890900',
+    "headRev": '25',
+    "headChange": '1184',
+    "headModTime": '1410890778',
+    "haveRev": '25',
+    "other": [ { 
+        "Open": "user@other_workspace",
+        "Action": "edit",
+        "Change": "1189" 
+    } ] 
+}
 ```
 
 Example:
