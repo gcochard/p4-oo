@@ -1,10 +1,226 @@
-<!Doctype HTML>
+<!doctype html>
 <html>
-    <head>
-    </head>
-    <body>
-        <h1><a href="jsdoc/">Docs</a></h1>
-        <h1><a href="coverage/lcov-report/">Coverage</a></h1>
-        <h1><a href="https://github.com/gcochard/p4-oo">Repo</a></h1>
-    </body>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>P4-oo by gcochard</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>P4-oo</h1>
+        <p>A tiny object-oriented library for dealing with Perforce</p>
+
+        <p class="view"><a href="https://github.com/gcochard/p4-oo">View the Project on GitHub <small>gcochard/p4-oo</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/gcochard/p4-oo/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/gcochard/p4-oo/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/gcochard/p4-oo">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a name="p4-oo-" class="anchor" href="#p4-oo-"><span class="octicon octicon-link"></span></a>p4-oo <a href="https://travis-ci.org/gcochard/p4-oo"><img src="https://travis-ci.org/gcochard/p4-oo.svg" alt="Build Status"></a>
+</h1>
+
+<p><a href="https://nodei.co/npm/p4-oo/"><img src="https://nodei.co/npm/p4-oo.png?compact=true" alt="NPM"></a></p>
+
+<p>p4-oo is a tiny object-oriented library for dealing with Perforce. Since Perforce sets all files in its workspace as read-only, and expects you to check out any file before editing, automated build processes and whatnot can stumble when trying to write to the file system. This library gives you a simple module to get Perforce out of the way. It saves its state across commands, so you can change working directories and set environment variables, and those will persist for subsequent commands. This is very helpful if you have a centralized system which is running perforce commands on behalf of users.</p>
+
+<h3>
+<a name="code-coverage" class="anchor" href="#code-coverage"><span class="octicon octicon-link"></span></a><a href="coverage/lcov-report/">Code Coverage</a>
+</h3>
+
+<h3>
+<a name="jsdoc" class="anchor" href="#jsdoc"><span class="octicon octicon-link"></span></a><a href="jsdoc/">JSDoc</a>
+</h3>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>Get the module from NPM</p>
+
+<pre lang="shell"><code>$ npm install p4-oo --save
+</code></pre>
+
+<p>Include it in your project</p>
+
+<div class="highlight highlight-js"><pre><span class="kd">var</span> <span class="nx">P4</span> <span class="o">=</span> <span class="nx">require</span><span class="p">(</span><span class="s2">"p4-oo"</span><span class="p">);</span>
+<span class="kd">var</span> <span class="nx">p4</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">P4</span><span class="p">();</span>
+</pre></div>
+
+<h2>
+<a name="api-reference" class="anchor" href="#api-reference"><span class="octicon octicon-link"></span></a>API Reference</h2>
+
+<h3>
+<a name="p4editpath-done" class="anchor" href="#p4editpath-done"><span class="octicon octicon-link"></span></a>p4.edit(path, done)</h3>
+
+<p>Tell Perforce to open a file for editing</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">edit</span><span class="p">(</span><span class="s2">"output.css"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stdout</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="p4addpath-done" class="anchor" href="#p4addpath-done"><span class="octicon octicon-link"></span></a>p4.add(path, done)</h3>
+
+<p>Tell Perforce to add a file to the default pending changelist</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">add</span><span class="p">(</span><span class="s2">"output.css"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stdout</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="p4smarteditpath-done" class="anchor" href="#p4smarteditpath-done"><span class="octicon octicon-link"></span></a>p4.smartEdit(path, done)</h3>
+
+<p>Start by asking Perforce (nicely) to open a file for editing. If that doesn't work, try adding the file.</p>
+
+<p>This is really meant to be a catch-all for automated output from tools. If you're generating files, there's a good chance that they don't exist yet in the workspace, but they might.</p>
+
+<blockquote>
+<p>Note: Since you're sending requests to your Perforce server with each of these commands, don't just run this willy-nilly on every file in your project or something silly like that.</p>
+</blockquote>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">smartEdit</span><span class="p">(</span><span class="s2">"output.css"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stdout</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="p4runcommand-args-done" class="anchor" href="#p4runcommand-args-done"><span class="octicon octicon-link"></span></a>p4.run(command, [args], done)</h3>
+
+<p>Run a command directly, rather than through a proxying function. You can use this to call arbitrary commands, but if you find yourself using this often, feel free to submit a pull request updating the API or an issue describing the command and what you'd like to see returned.</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s2">"edit"</span><span class="p">,</span> <span class="s2">"path/to/file"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stdout</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Without optional "args" arg</span>
+<span class="nx">p4</span><span class="p">.</span><span class="nx">run</span><span class="p">(</span><span class="s2">"info"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stdout</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="p4setoptsoptions" class="anchor" href="#p4setoptsoptions"><span class="octicon octicon-link"></span></a>p4.setOpts(options)</h3>
+
+<p>Set options for the child_process, these options persist across commands.
+Also supports chaining.</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">setOpts</span><span class="p">({</span><span class="nx">env</span><span class="o">:</span><span class="p">{</span><span class="nx">P4PORT</span><span class="o">:</span><span class="s1">'perforce:1666'</span><span class="p">,</span><span class="nx">P4USER</span><span class="o">:</span><span class="s1">'username'</span><span class="p">,</span><span class="nx">P4CONFIG</span><span class="o">:</span><span class="s1">'.p4config'</span><span class="p">}});</span>
+<span class="nx">p4</span><span class="p">.</span><span class="nx">edit</span><span class="p">(</span><span class="s2">"output.css"</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">stdout</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">stdout</span><span class="p">);</span>
+    <span class="c1">//user 'username' now has 'output.css' checked out</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="p4cddir" class="anchor" href="#p4cddir"><span class="octicon octicon-link"></span></a>p4.cd(dir)</h3>
+
+<p>Change working directory for the perforce child_process. This persists across commands.
+Also supports chaining.</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">cd</span><span class="p">(</span><span class="s1">'/'</span><span class="p">).</span><span class="nx">cd</span><span class="p">(</span><span class="s1">'dir'</span><span class="p">);</span>
+<span class="nx">p4</span><span class="p">.</span><span class="nx">pwd</span><span class="p">();</span>
+<span class="c1">//returns '/dir'</span>
+</pre></div>
+
+<h3>
+<a name="p4statfiledone" class="anchor" href="#p4statfiledone"><span class="octicon octicon-link"></span></a>p4.stat(file,done)</h3>
+
+<p>Stats a file and returns a JSON object with the file's properties.</p>
+
+<p>Should look like the following:</p>
+
+<div class="highlight highlight-json"><pre><span class="p">{</span> 
+    <span class="nt">"depotFile"</span><span class="p">:</span> <span class="s2">"//depot/output.css"</span><span class="p">,</span>
+    <span class="nt">"clientFile"</span><span class="p">:</span> <span class="s2">"/Users/username/workspace/output.css"</span><span class="p">,</span>
+    <span class="nt">"isMapped"</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">"headAction"</span><span class="p">:</span> <span class="s2">"edit"</span><span class="p">,</span>
+    <span class="nt">"headType"</span><span class="p">:</span> <span class="s2">"xtext"</span><span class="p">,</span>
+    <span class="nt">"headTime"</span><span class="p">:</span> <span class="s2">"1410890900"</span><span class="p">,</span>
+    <span class="nt">"headRev"</span><span class="p">:</span> <span class="s2">"25"</span><span class="p">,</span>
+    <span class="nt">"headChange"</span><span class="p">:</span> <span class="s2">"1184"</span><span class="p">,</span>
+    <span class="nt">"headModTime"</span><span class="p">:</span> <span class="s2">"1410890778"</span><span class="p">,</span>
+    <span class="nt">"haveRev"</span><span class="p">:</span> <span class="s2">"25"</span><span class="p">,</span>
+    <span class="nt">"other"</span><span class="p">:</span> <span class="p">[</span> <span class="p">{</span> 
+        <span class="nt">"Open"</span><span class="p">:</span> <span class="s2">"user@other_workspace"</span><span class="p">,</span>
+        <span class="nt">"Action"</span><span class="p">:</span> <span class="s2">"edit"</span><span class="p">,</span>
+        <span class="nt">"Change"</span><span class="p">:</span> <span class="s2">"1189"</span> 
+    <span class="p">}</span> <span class="p">]</span> 
+<span class="p">}</span>
+</pre></div>
+
+<p>Example:</p>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">stat</span><span class="p">(</span><span class="s1">'output.css'</span><span class="p">,</span> <span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">stats</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">.</span><span class="nx">message</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">dir</span><span class="p">(</span><span class="nx">stats</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h3>
+<a name="p4statdirdirectorydone" class="anchor" href="#p4statdirdirectorydone"><span class="octicon octicon-link"></span></a>p4.statDir(directory,done)</h3>
+
+<p>Runs p4 fstat * in the directory. Ignores errors regarding subdirectories not being in workspace. Output matches <code>p4.stat</code> schema.</p>
+
+<h3>
+<a name="p4recursivestatdirdirectorydone" class="anchor" href="#p4recursivestatdirdirectorydone"><span class="octicon octicon-link"></span></a>p4.recursiveStatDir(directory,done)</h3>
+
+<p>Runs p4.fstat ... in the directory. Does not ignore errors, as it is running using perforce's <code>under this dir</code> rather than shell glob.</p>
+
+<h3>
+<a name="p4syncfilenamedone" class="anchor" href="#p4syncfilenamedone"><span class="octicon octicon-link"></span></a>p4.sync(filename,done)</h3>
+
+<p>Runs p4 sync filename in cwd.
+If file is already at latest revision, is not under client, or perforce errors otherwise, error object will be set.
+If sync is successful, data will look like this:</p>
+
+<blockquote>
+<p>//depot/output.css#25 - updating /Users/username/workspace/output.css</p>
+</blockquote>
+
+<div class="highlight highlight-js"><pre><span class="nx">p4</span><span class="p">.</span><span class="nx">sync</span><span class="p">(</span><span class="s1">'output.css'</span><span class="p">,</span><span class="kd">function</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span><span class="nx">data</span><span class="p">){</span>
+    <span class="k">if</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span> <span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="nx">err</span><span class="p">);</span>
+    <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="nx">data</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></div>
+
+<h2>
+<a name="tests" class="anchor" href="#tests"><span class="octicon octicon-link"></span></a>Tests</h2>
+
+<p>Tests are written in mocha and have child_process.exec mocked in order to test all output. Test coverage is tracked with istanbul.</p>
+
+<h2>
+<a name="contribution" class="anchor" href="#contribution"><span class="octicon octicon-link"></span></a>Contribution</h2>
+
+<p>Send me a pull request!</p>
+
+<p>Originally forked from <a href="https://github.com/natelong/p4">natelong/p4</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/gcochard">gcochard</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
 </html>
