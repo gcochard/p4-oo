@@ -21,7 +21,6 @@
     "eslint-plugin-mocha": "^0.2.0",
     "istanbul": "^0.3.2",
     "mocha": "^1.21.4",
-    "rewire": "^2.1.0",
     "underscore": "^1.7.0"
   },
   "scripts": {
