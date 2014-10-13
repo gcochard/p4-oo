@@ -1,6 +1,6 @@
 {
   "name": "p4-oo",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "A small object-oriented utility library for dealing with Perforce",
   "main": "index.js",
   "author": "Greg Cochard <greg.cochard@gmail.com> (https://gregcochard.com)",
@@ -17,6 +17,7 @@
     "perforce"
   ],
   "devDependencies": {
+    "chai": "^1.9.2",
     "eslint": "^0.8.2",
     "eslint-plugin-mocha": "^0.2.0",
     "grunt": "^0.4.5",

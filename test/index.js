@@ -6,8 +6,9 @@
 
 'use strict';
 var path = require('path'),
-assert = require('assert'),
 EventEmitter = require('events').EventEmitter,
+expect = require('chai').expect,
+should = require('chai').should(),
 util = require('util'),
 errnoException = util._errnoException,
 maybeClose = function(subprocess){
@@ -135,7 +136,7 @@ describe('P4', function(){
 
         p4s.forEach(function(p4,idx){
             idx = '/dir'+idx;
-            assert.equal(p4.pwd(),idx);
+            expect(p4.pwd()).to.equal(idx);
         });
 
         done();
@@ -145,9 +146,9 @@ describe('P4', function(){
         /*eslint-disable new-cap */
         var p4 = P4();
         /*eslint-enable new-cap */
-        assert(p4 instanceof P4);
+        expect(p4).to.be.instanceof(P4);
         var p4n = new P4();
-        assert(p4n instanceof P4);
+        expect(p4n).to.be.instanceof(P4);
     });
 
     it('should exec crap',function(done){
@@ -157,9 +158,9 @@ describe('P4', function(){
         var stdout = 'yay\n';
         stdouts.push(stdout);
         p4.runShellCommand('echo',['yay'],function(err,out,stderr){
-            assert.equal(out,stdout);
-            assert.ifError(err);
-            assert.equal(stderr,null);
+            expect(out).to.equal(stdout);
+            should.not.exist(err);
+            should.not.exist(stderr);
             done();
         });
     });
@@ -170,10 +171,10 @@ describe('P4', function(){
         errs.push(new Error('ENOENT'));
         stdouts.push('yay\n');
         p4.runShellCommand('echo','yay',function(err,stdout,stderr){
-            assert.ok(err);
-            assert.equal(err.message,'ENOENT');
-            assert.equal(stdout,null);
-            assert.equal(stderr,null);
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal('ENOENT');
+            should.not.exist(stdout);
+            should.not.exist(stderr);
             done();
         });
     });
@@ -185,9 +186,9 @@ describe('P4', function(){
         var stdout = 'yay\n';
         stdouts.push(stdout);
         p4.runCommand('yay',function(err,out,stderr){
-            assert.ifError(err);
-            assert.equal(stdout,out);
-            assert.equal(stderr,null);
+            should.not.exist(err);
+            expect(out).to.equal(stdout);
+            should.not.exist(stderr);
             done();
         });
     });
@@ -200,10 +201,10 @@ describe('P4', function(){
         var stdout = 'yay\n';
         stdouts.push(stdout);
         p4.runShellCommand('echo',['yay'],function(err,out,stdErr){
-            assert.ok(err);
-            assert.equal(err.message,stderr);
-            assert.equal(out,stdout);
-            assert.equal(stdErr,null);
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal(stderr);
+            expect(out).to.equal(stdout);
+            should.not.exist(stdErr);
             done();
         });
     });
@@ -217,8 +218,8 @@ describe('P4', function(){
         ].join('\n');
         stdouts.push(stdout);
         p4.edit('foo.js',function(err,res){
-            assert.ifError(err);
-            assert.equal(res,stdout);
+            should.not.exist(err);
+            expect(res).to.equal(stdout);
             done();
         });
     });
@@ -234,9 +235,9 @@ describe('P4', function(){
         errs.push(thiserr);
         stdouts.push('');
         p4.edit('foo.js',function(err,res){
-            assert.ok(err);
-            assert.equal(err.message,'Command failed: Perforce password (P4PASSWD) invalid or unset.');
-            assert.equal(res,null);
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal('Command failed: Perforce password (P4PASSWD) invalid or unset.');
+            should.not.exist(res);
             done();
         });
     });
@@ -248,8 +249,8 @@ describe('P4', function(){
         var stdout = '//depot/path/to/file/bar.js#1 - opened for add\n';
         stdouts.push(stdout);
         p4.add('bar.js',function(err,res){
-            assert.ifError(err);
-            assert.equal(res,stdout);
+            should.not.exist(err);
+            expect(res).to.equal(stdout);
             done();
         });
     });
@@ -265,9 +266,9 @@ describe('P4', function(){
         errs.push(thiserr);
         stdouts.push('');
         p4.add('bar.js',function(err,res){
-            assert.ok(err);
-            assert.equal(err.message,'Command failed: Perforce password (P4PASSWD) invalid or unset.');
-            assert.equal(res,null);
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal('Command failed: Perforce password (P4PASSWD) invalid or unset.');
+            should.not.exist(res);
             done();
         });
     });
@@ -279,8 +280,8 @@ describe('P4', function(){
         var stdout = '//depot/path/to/file/bar.js#1 - opened for add\n';
         stdouts.push(stdout);
         p4.smartEdit('bar.js',function(err,res){
-            assert.ifError(err);
-            assert.equal(res,stdout);
+            should.not.exist(err);
+            expect(res).to.equal(stdout);
             done();
         });
     });
@@ -291,8 +292,8 @@ describe('P4', function(){
         stdouts.push('bar.js#1 - opened for add\n','');
         errs.push(null,null);
         p4.smartEdit('bar.js',function(err,res){
-            assert.ifError(err);
-            assert.equal(res,'bar.js#1 - opened for add\n');
+            should.not.exist(err);
+            expect(res).to.equal('bar.js#1 - opened for add\n');
             done();
         });
     });
@@ -309,9 +310,9 @@ describe('P4', function(){
         errs.push(err);
         stdouts.push('');
         p4.add('bar.js',function(err,res){
-            assert.ok(err);
-            assert.equal(err.message,'Command failed: Perforce password (P4PASSWD) invalid or unset.');
-            assert.equal(res,null);
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal('Command failed: Perforce password (P4PASSWD) invalid or unset.');
+            should.not.exist(res);
             done();
         });
     });
@@ -338,7 +339,7 @@ describe('P4', function(){
             '... actionOwner luser',
         ].join('\n'));
         p4.stat('foo.js',function(err,stats){
-            assert.ifError(err);
+            should.not.exist(err);
             var expectedStats = {
                 depotFile: '//depot/path/to/foo.js',
                 clientFile: '/path/to/workspace/foo.js',
@@ -355,7 +356,7 @@ describe('P4', function(){
                 type: 'text',
                 actionOwner: 'luser',
             };
-            assert.deepEqual(stats,expectedStats);
+            expect(stats).to.deep.equal(expectedStats);
             done();
         });
     });
@@ -366,8 +367,8 @@ describe('P4', function(){
         stderrs.push('');
         stdouts.push('... haveRev 2\n');
         p4.have('foo.js',function(err,revision){
-            assert.ifError(err);
-            assert.equal(revision,2);
+            should.not.exist(err);
+            expect(revision).to.equal('2');
             done();
         });
     });
@@ -378,8 +379,8 @@ describe('P4', function(){
         stderrs.push('foo.js - file(s) not on client.\n');
         stdouts.push('');
         p4.have('foo.js',function(err,revision){
-            assert.ok(err);
-            assert(!revision);
+            err.should.be.instanceof(Error);
+            should.not.exist(revision);
             done();
         });
     });
@@ -387,9 +388,9 @@ describe('P4', function(){
     it('should call the cb with error if filepath not passed to stat',function(done){
         var p4 = new P4();
         p4.stat(function(err,out){
-            assert.ok(err);
-            assert.equal(out,null);
-            assert.equal(err.message,'Please pass a file to stat!');
+            err.should.be.instanceof(Error);
+            should.not.exist(out);
+            expect(err.message).to.equal('Please pass a file to stat!');
             done();
         });
     });
@@ -400,8 +401,8 @@ describe('P4', function(){
         stderrs.push('fdsa\n');
         stdouts.push('');
         p4.stat('foo.js',function(err,stats){
-            assert.ok(err);
-            assert(!stats);
+            err.should.be.instanceof(Error);
+            should.not.exist(stats);
             done();
         });
     });
@@ -412,8 +413,8 @@ describe('P4', function(){
         stdouts.push('');
         errs.push(new Error('ENOENT'));
         p4.stat('foo.js',function(err,stats){
-            assert.ok(err);
-            assert(!stats);
+            err.should.be.instanceof(Error);
+            should.not.exist(stats);
             done();
         });
     });
@@ -488,10 +489,9 @@ describe('P4', function(){
             actionOwner: 'luser',
         }];
         p4.statDir(function(err,stats){
-            assert.ifError(err);
-            assert.ok(stats);
-            assert(stats.length);
-            assert.deepEqual(stats,expectedStats);
+            should.not.exist(err);
+            expect(stats).to.have.length(2);
+            expect(stats).to.deep.equal(expectedStats);
             done();
         });
     });
@@ -502,9 +502,9 @@ describe('P4', function(){
         stderrs.push('');
         stdouts.push('');
         p4.statDir('/path/to/dir/',function(err,out){
-            assert.ifError(err);
-            assert(out instanceof Array, 'output not array!');
-            assert.equal(p4.pwd(),'/path/to/dir');
+            should.not.exist(err);
+            out.should.be.instanceof(Array);
+            expect(p4.pwd()).to.equal('/path/to/dir');
             done();
         });
     });
@@ -515,9 +515,9 @@ describe('P4', function(){
         stderrs.push('');
         stdouts.push('');
         p4.statDir('/path/to/dir/',function(err,out){
-            assert.equal(err.message,'fdsa');
-            assert.equal(out,null);
-            assert.equal(p4.pwd(),'/path/to/dir');
+            expect(err.message).to.equal('fdsa');
+            should.not.exist(out);
+            expect(p4.pwd()).to.equal('/path/to/dir');
             done();
         });
     });
@@ -559,8 +559,8 @@ describe('P4', function(){
         ].join('\n')+'\n');
         stderrs.push('');
         p4.statDir('/path/to/dir/',function(err,out){
-            assert(err instanceof Error);
-            assert.equal(out,null);
+            err.should.be.instanceof(Error);
+            should.not.exist(out);
             done();
         });
     });
@@ -570,11 +570,11 @@ describe('P4', function(){
         errs.push(null);
         stderrs.push('bar - no such file(s).\n');
         stdouts.push('');
-        var expectedStats = {};
+        var expectedStats = [];
         p4.statDir(function(err,stats){
-            assert.ifError(err);
-            assert.ok(stats);
-            assert.deepEqual(stats,expectedStats);
+            should.not.exist(err);
+            stats.should.have.length(0);
+            stats.should.deep.equal(expectedStats);
             done();
         });
     });
@@ -638,16 +638,16 @@ describe('P4', function(){
             isMapped: true,
             headAction: 'edit',
             headType: 'xtext',
-            headTime: 1234567890,
-            headRev: 123,
-            headChange: 12345,
-            headModTime: 1234567890,
-            haveRev: 123,
+            headTime: '1234567890',
+            headRev: '123',
+            headChange: '12345',
+            headModTime: '1234567890',
+            haveRev: '123',
             other: [
                 {
                     Open: 'other@some_other_workspace',
                     Action: 'edit',
-                    Change: 12340,
+                    Change: '12340',
                 },{
                     Open: 'other@another_workspace',
                     Action: 'edit',
@@ -659,7 +659,7 @@ describe('P4', function(){
                 },{
                     Open: 'other@some_other_workspace',
                     Action: 'edit',
-                    Change: 12340,
+                    Change: '12340',
                 },{
                     Open: 'other@another_workspace',
                     Action: 'edit',
@@ -671,7 +671,7 @@ describe('P4', function(){
                 },{
                     Open: 'other@some_other_workspace',
                     Action: 'edit',
-                    Change: 12340,
+                    Change: '12340',
                 },{
                     Open: 'other@another_workspace',
                     Action: 'edit',
@@ -683,7 +683,7 @@ describe('P4', function(){
                 },{
                     Open: 'other@some_other_workspace',
                     Action: 'edit',
-                    Change: 12340,
+                    Change: '12340',
                 },{
                     Open: 'other@another_workspace',
                     Action: 'edit',
@@ -693,10 +693,8 @@ describe('P4', function(){
         };
 
         p4.stat('foo.js',function(err,stats){
-            assert.ifError(err);
-            assert.ok(stats);
-            assert.equal(stats.length,expectedStats.length,require('util').inspect({stats:stats,expectedStats:expectedStats},{depth:4}));
-            assert.deepEqual(stats,expectedStats,require('util').inspect({stats:stats,expectedStats:expectedStats},{depth:4}));
+            should.not.exist(err);
+            stats.should.deep.equal(expectedStats);
             stderrs.push('');
             errs.push(null);
             stdouts.push([
@@ -716,8 +714,8 @@ describe('P4', function(){
                 '... ... ... actionOwner luser',
             ].join('\n')+'\n');
             p4.stat('foo.js',function(err,stats){
-                assert.ok(err);
-                assert.equal(stats,null);
+                err.should.be.instanceof(Error);
+                should.not.exist(stats);
                 done();
             });
         });
@@ -793,10 +791,8 @@ describe('P4', function(){
             actionOwner: 'luser',
         }];
         p4.recursiveStatDir(function(err,stats){
-            assert.ifError(err);
-            assert.ok(stats);
-            assert(stats.length);
-            assert.deepEqual(stats,expectedStats);
+            should.not.exist(err);
+            stats.should.deep.equal(expectedStats);
             stdouts.push([
                         '... depotFile //depot/path/to/foo.js',
                         '... clientFile /path/to/workspace/foo.js',
@@ -831,11 +827,9 @@ describe('P4', function(){
             stderrs.push('');
             errs.push(null);
             p4.recursiveStatDir('/foo/bar',function(err,stats){
-                assert.ifError(err);
-                assert.equal(p4.pwd(),'/foo/bar');
-                assert.ok(stats);
-                assert(stats.length);
-                assert.deepEqual(stats,expectedStats);
+                should.not.exist(err);
+                expect(p4.pwd()).to.equal('/foo/bar');
+                stats.should.deep.equal(expectedStats);
                 done();
             });
         });
@@ -847,8 +841,8 @@ describe('P4', function(){
         stderrs.push('I can\'t let you do that starfox...');
         stdouts.push('');
         p4.recursiveStatDir(function(err,stats){
-            assert.ok(err);
-            assert.equal(stats,null);
+            err.should.be.instanceof(Error);
+            should.not.exist(stats);
             done();
         });
     });
@@ -892,8 +886,8 @@ describe('P4', function(){
         ].join('\n')+'\n');
 
         p4.stat('foo.js',function(err,stats){
-            assert.equal(stats,null);
-            assert.ok(err);
+            should.not.exist(stats);
+            err.should.be.instanceof(Error);
             errs.push(null,null);
             stderrs.push('','');
 
@@ -966,11 +960,11 @@ describe('P4', function(){
             ].join('\n')+'\n');
 
             p4.stat('foo.js',function(err,stats){
-                assert.ok(err);
-                assert.equal(stats,null);
+                err.should.be.instanceof(Error);
+                should.not.exist(stats);
                 p4.recursiveStatDir(function(err,stats){
-                    assert.ok(err);
-                    assert.equal(stats,null);
+                    err.should.be.instanceof(Error);
+                    should.not.exist(stats);
                     done();
                 });
             });
@@ -981,13 +975,13 @@ describe('P4', function(){
         var p4 = new P4();
         p4.cd('/');
         p4.setOpts({cwd:'/a/b/c/d/e/f/g'});
-        assert.equal(p4.pwd(),'/');
+        expect(p4.pwd()).to.equal('/');
     });
 
     it('should set options',function(){
          var p4 = new P4();
          p4.setOpts({fdsa:'fdsa',asdf:'asdf'});
-         assert.deepEqual(p4.options,{fdsa:'fdsa',asdf:'asdf'});
+         expect(p4.options).to.deep.equal({fdsa:'fdsa',asdf:'asdf'});
     });
 
     it('should work with revert',function(done){
@@ -996,8 +990,8 @@ describe('P4', function(){
         stdouts.push('//depot/path/to/file/foo.js#123 - was edit, reverted\n');
         errs.push(null);
         p4.revert('foo.js',function(err,results){
-            assert.ifError(err);
-            assert(results);
+            should.not.exist(err);
+            should.exist(results);
             done();
         });
     });
@@ -1006,8 +1000,8 @@ describe('P4', function(){
         var p4 = new P4();
         // No need to push anything to stdouts, stderrs, errs, because exec is not called here
         p4.revert(function(err,results){
-            assert.ok(err);
-            assert.equal(results,null);
+            err.should.be.instanceof(Error);
+            should.not.exist(results);
             done();
         });
     });
@@ -1018,8 +1012,8 @@ describe('P4', function(){
         stdouts.push('//depot/path/to/file/foo.js#123 - was edit, reverted\n');
         errs.push(null);
         p4.revertUnchanged(function(err,results){
-            assert.ifError(err);
-            assert(results);
+            should.not.exist(err);
+            should.exist(results);
             done();
         });
     });
@@ -1030,8 +1024,8 @@ describe('P4', function(){
         stderrs.push('');
         stdouts.push('//depot/path/to/file/foo.js#123 - was edit, reverted\n');
         p4.revertUnchanged('bar.js',function(err,results){
-            assert.ifError(err);
-            assert(results);
+            should.not.exist(err);
+            should.exist(results);
             done();
         });
     });
@@ -1039,8 +1033,8 @@ describe('P4', function(){
     it('should call cb with error if no path is passed ot have',function(done){
         var p4 = new P4();
         p4.have(function(err,rev){
-            assert.ok(err);
-            assert.equal(rev,null);
+            err.should.be.instanceof(Error);
+            should.not.exist(rev);
             done();
         });
     });
@@ -1057,8 +1051,8 @@ describe('P4', function(){
         ].join('\n')+'\n';
         stdouts.push(stdout);
         p4.submit('foo.js','adding mad opts to foo yo!',function(err,res){
-            assert.ifError(err);
-            assert.equal(stdout,res);
+            should.not.exist(err);
+            expect(res).to.equal(stdout);
             done();
         });
     });
@@ -1069,8 +1063,8 @@ describe('P4', function(){
         stdouts.push('');
         stderrs.push('yeah...about that');
         p4.submit('foo.js','adding mad opts to foo yo!',function(err,res){
-            assert.ok(err);
-            assert.equal(res,null);
+            err.should.be.instanceof(Error);
+            should.not.exist(res);
             done();
         });
     });
@@ -1082,9 +1076,9 @@ describe('P4', function(){
         var stderr = 'Could not submit foo.js, please sync/resolve first\n';
         stderrs.push(stderr);
         p4.submit('foo.js','adding mad opts to foo yo!',function(err,res){
-            assert.ok(err);
-            assert.equal(res,null);
-            assert.equal(err.message,stderr);
+            err.should.be.instanceof(Error);
+            should.not.exist(res);
+            expect(err.message).to.equal(stderr);
             done();
         });
     });
@@ -1096,8 +1090,8 @@ describe('P4', function(){
         var stdout = 'foo.js - file(s) up-to-date.\n';
         stdouts.push(stdout);
         p4.sync('foo.js',function(err,out){
-            assert.ifError(err);
-            assert.equal(out,stdout);
+            should.not.exist(err);
+            expect(out).to.equal(stdout);
             done();
         });
     });
@@ -1109,8 +1103,8 @@ describe('P4', function(){
         var stdout = 'foo.js - file(s) up-to-date.\n';
         stdouts.push(stdout);
         p4.sync(function(err,out){
-            assert.ifError(err);
-            assert.equal(out,stdout);
+            should.not.exist(err);
+            expect(out).to.equal(stdout);
             done();
         });
     });
@@ -1122,12 +1116,12 @@ describe('P4', function(){
         var stdout = 'foo.js - file(s) up-to-date.\n';
         stdouts.push(stdout,stdout);
         p4.syncDir(function(err,out){
-            assert.ifError(err);
-            assert.equal(out,stdout);
+            should.not.exist(err);
+            expect(out).to.equal(stdout);
             p4.syncDir('/path/to/dir/',function(err,out){
-                assert.ifError(err);
-                assert.equal(p4.pwd(),'/path/to/dir');
-                assert.equal(out,stdout);
+                should.not.exist(err);
+                expect(p4.pwd()).to.equal('/path/to/dir');
+                expect(out).to.equal(stdout);
                 done();
             });
         });
@@ -1140,12 +1134,12 @@ describe('P4', function(){
         var stdout = 'foo.js - file(s) up-to-date.\n';
         stdouts.push(stdout,stdout);
         p4.recursiveSyncDir(function(err,out){
-            assert.ifError(err);
-            assert.equal(out,stdout);
+            should.not.exist(err);
+            expect(out).to.equal(stdout);
             p4.recursiveSyncDir('/path/to/dir/',function(err,out){
-                assert.ifError(err);
-                assert.equal(p4.pwd(),'/path/to/dir');
-                assert.equal(out,stdout);
+                should.not.exist(err);
+                expect(p4.pwd()).to.equal('/path/to/dir');
+                expect(out).to.equal(stdout);
                 done();
             });
         });
@@ -1158,8 +1152,8 @@ describe('P4', function(){
         var stdout = 'User foo logged in.';
         stdouts.push(stdout);
         p4.login('foo','foo',function(err,out){
-            assert.ifError(err);
-            assert.equal(out,stdout);
+            should.not.exist(err);
+            expect(out).to.equal(stdout);
             done();
         });
     });
