@@ -1,4 +1,4 @@
-# p4-oo [![Build Status](https://travis-ci.org/gcochard/p4-oo.svg)](https://travis-ci.org/gcochard/p4-oo)
+# p4-oo [![Build Status](https://travis-ci.org/gcochard/p4-oo.svg)](https://travis-ci.org/gcochard/p4-oo) [![Coverage Status](https://img.shields.io/coveralls/gcochard/p4-oo.svg)](https://coveralls.io/r/gcochard/p4-oo)
 [![NPM](https://nodei.co/npm/p4-oo.png?compact=true)](https://nodei.co/npm/p4-oo/)
 
 p4-oo is a tiny object-oriented library for dealing with Perforce. Since Perforce sets all files in its workspace as read-only, and expects you to check out any file before editing, automated build processes and whatnot can stumble when trying to write to the file system. This library gives you a simple module to get Perforce out of the way. It saves its state across commands, so you can change working directories and set environment variables, and those will persist for subsequent commands. This is very helpful if you have a centralized system which is running perforce commands on behalf of users.
