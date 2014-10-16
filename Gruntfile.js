@@ -17,12 +17,11 @@ module.exports = function(grunt){
         },
         eslint: {
             options: {
-                rulesDir: './node_modules/eslint/lib/rules',
-                config: './.eslintrc'
+                rulesDir: './node_modules/eslint/lib/rules'
             },
             nodeFiles: {
                 files: {
-                    src: ['index.js','lib/*.js','test/*.js']
+                    src: ['index.js','lib/*.js']
                 },
                 options: {
                     config: 'conf/node-eslint.json'

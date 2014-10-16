@@ -1,6 +1,6 @@
 {
   "name": "p4-oo",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "description": "A small object-oriented utility library for dealing with Perforce",
   "main": "index.js",
   "author": "Greg Cochard <greg.cochard@gmail.com> (https://gregcochard.com)",
@@ -29,6 +29,7 @@
     "underscore": "^1.7.0"
   },
   "scripts": {
-    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha"
+    "test": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha",
+    "lint": "grunt lint"
   }
 }
