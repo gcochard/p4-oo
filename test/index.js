@@ -101,10 +101,13 @@ ChildMock = function(){
 }
 ;
 util.inherits(ChildProcess, EventEmitter);
-var errs = [], stdouts = [], stderrs = [];
+var errs = [], stdouts = [], stderrs = [], throws = [];
 ChildMock.exec = function(cmd,opts,cb){
     var err = null, stdout = '', stderr = '';
     var child = new ChildProcess();
+    if(throws.length){
+        throw throws.pop();
+    }
     //console.log(opts);
     if(errs.length && stdouts.length && stderrs.length){
         err = errs.pop();
@@ -179,6 +182,19 @@ describe('P4', function(){
         });
     });
 
+    it('should call cb with error that exec throws',function(done){
+        var p4 = new P4();
+        throws.push(new Error('exec ENOENT'));
+        p4.runShellCommand('echo','yay',function(err,stdout,stderr){
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal('exec ENOENT');
+            should.not.exist(stdout);
+            should.not.exist(stderr);
+            done();
+        });
+    });
+
+
     it('should run arbitrary p4 command',function(done){
         var p4 = new P4();
         stderrs.push('');
@@ -204,6 +220,18 @@ describe('P4', function(){
             err.should.be.instanceof(Error);
             expect(err.message).to.equal(stderr);
             expect(out).to.equal(stdout);
+            should.not.exist(stdErr);
+            done();
+        });
+    });
+
+    it('should call cb with error that exec throws',function(done){
+        var p4 = new P4();
+        throws.push(new Error('happy ENOTFOUND'));
+        p4.runCommand('yay',function(err,out,stdErr){
+            err.should.be.instanceof(Error);
+            expect(err.message).to.equal('happy ENOTFOUND');
+            should.not.exist(out);
             should.not.exist(stdErr);
             done();
         });
