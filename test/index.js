@@ -1173,17 +1173,127 @@ describe('P4', function(){
         });
     });
 
-    it('should login',function(done){
-        var p4 = new P4();
-        errs.push(null);
-        stderrs.push('');
-        var stdout = 'User foo logged in.';
-        stdouts.push(stdout);
-        p4.login('foo','foo',function(err,out){
-            should.not.exist(err);
-            expect(out).to.equal(stdout);
-            done();
+    describe('login',function(){
+
+        it('should login',function(done){
+            var p4 = new P4();
+            errs.push(null);
+            stderrs.push('');
+            var stdout = 'User foo logged in.';
+            stdouts.push(stdout);
+            p4.login('foo','foo',function(err,out){
+                should.not.exist(err);
+                expect(out).to.equal(stdout);
+                done();
+            });
         });
+
+        it('should cache credentials and re-login',function(done){
+            var p4 = new P4();
+            errs.push(null);
+            stderrs.push('');
+            var stdout = 'User foo logged in.';
+            stdouts.push(stdout);
+            p4.login('foo','foo',function(err,out){
+                should.not.exist(err);
+                expect(out).to.equal(stdout);
+                errs.push(null);
+                stderrs.push('');
+                stdouts.push(stdout);
+                p4.login(function(err,out){
+                    expect(out).to.equal(stdout);
+                    should.not.exist(err);
+                    done();
+                });
+            });
+        });
+
+        it('should log in automatically when login is stale',function(done){
+            var p4 = new P4();
+            errs.push(null);
+            stderrs.push('');
+            var stdout = 'User foo logged in.';
+            stdouts.push(stdout);
+            p4.login('foo','foo',function(err,out){
+                should.not.exist(err);
+                expect(out).to.equal(stdout);
+                errs.push(null);
+                stderrs.push('');
+                stdouts.push([
+                    '... depotFile //depot/path/to/foo.js',
+                    '... clientFile /path/to/workspace/foo.js',
+                    '... isMapped',
+                    '... headAction edit',
+                    '... headType text',
+                    '... headTime 1230890900',
+                    '... headRev 2',
+                    '... headChange 123',
+                    '... headModTime 1230890900',
+                    '... haveRev 2',
+                    '... action edit',
+                    '... change default',
+                    '... type text',
+                    '... actionOwner luser',
+                ].join('\n'));
+
+                errs.push(null);
+                stderrs.push('');
+                stdout = 'User foo logged in.';
+                stdouts.push(stdout);
+
+                errs.push(null);
+                stdouts.push('');
+                stderrs.push('Perforce password (P4PASSWD) invalid or unset.');
+
+                p4.stat('foo',function(err,stats){
+                    should.not.exist(err);
+                    var expectedStats = {
+                        depotFile: '//depot/path/to/foo.js',
+                        clientFile: '/path/to/workspace/foo.js',
+                        isMapped: true,
+                        headAction: 'edit',
+                        headType: 'text',
+                        headTime: '1230890900',
+                        headRev: '2',
+                        headChange: '123',
+                        headModTime: '1230890900',
+                        haveRev: '2',
+                        action: 'edit',
+                        change: 'default',
+                        type: 'text',
+                        actionOwner: 'luser',
+                    };
+                    expect(stats).to.deep.equal(expectedStats);
+                    done();
+                });
+            });
+        });
+
+        it('should bail on failed auto-login',function(done){
+            var p4 = new P4();
+            errs.push(null);
+            stderrs.push('');
+            var stdout = 'User foo logged in.';
+            stdouts.push(stdout);
+            p4.login('foo','foo',function(err,out){
+                should.not.exist(err);
+                expect(out).to.equal(stdout);
+                errs.push(null);
+                stderrs.push('Perforce password (P4PASSWD) invalid or unset.');
+                stdouts.push('');
+
+                errs.push(null);
+                stdouts.push('');
+                stderrs.push('Perforce password (P4PASSWD) invalid or unset.');
+
+                p4.stat('foo',function(err,stats){
+                    err.should.be.instanceof(Error);
+                    should.not.exist(stats);
+                    done();
+                });
+            });
+        });
+
     });
 
 });
