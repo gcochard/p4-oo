@@ -102,13 +102,14 @@ ChildMock = function(){
 ;
 util.inherits(ChildProcess, EventEmitter);
 var errs = [], stdouts = [], stderrs = [], throws = [];
+var lastCmd;
 ChildMock.exec = function(cmd,opts,cb){
+    lastCmd = cmd;
     var err = null, stdout = '', stderr = '';
     var child = new ChildProcess();
     if(throws.length){
         throw throws.pop();
     }
-    //console.log(opts);
     if(errs.length && stdouts.length && stderrs.length){
         err = errs.pop();
         stdout = stdouts.pop();
@@ -137,9 +138,9 @@ describe('P4', function(){
             p4s.push(p4);
         }
 
-        p4s.forEach(function(p4,idx){
+        p4s.forEach(function(p,idx){
             idx = '/dir'+idx;
-            expect(p4.pwd()).to.equal(idx);
+            expect(p.pwd()).to.equal(idx);
         });
 
         done();
@@ -252,6 +253,20 @@ describe('P4', function(){
         });
     });
 
+    it('should edit files with special chars in the names',function(done){
+        var p4 = new P4();
+        var stdout = '//depot/path/to/file/foo@foo.js#123 - opened for edit';
+        stderrs.push('');
+        errs.push(null);
+        stdouts.push(stdout);
+        p4.edit('foo@foo.js',function(err,res){
+            should.not.exist(err);
+            expect(lastCmd).to.equal('p4 edit foo%40foo.js');
+            expect(res).to.equal(stdout);
+            done();
+        });
+    });
+
     it('should call cb with error when edit fails',function(done){
         var p4 = new P4();
         var thiserror = 'Perforce password (P4PASSWD) invalid or unset.';
@@ -337,9 +352,9 @@ describe('P4', function(){
         err.signal = null;
         errs.push(err);
         stdouts.push('');
-        p4.add('bar.js',function(err,res){
-            err.should.be.instanceof(Error);
-            expect(err.message).to.equal('Command failed: Perforce password (P4PASSWD) invalid or unset.');
+        p4.add('bar.js',function(theerr,res){
+            theerr.should.be.instanceof(Error);
+            expect(theerr.message).to.equal('Command failed: Perforce password (P4PASSWD) invalid or unset.');
             should.not.exist(res);
             done();
         });
@@ -741,9 +756,9 @@ describe('P4', function(){
                 '... ... ... type text',
                 '... ... ... actionOwner luser',
             ].join('\n')+'\n');
-            p4.stat('foo.js',function(err,stats){
-                err.should.be.instanceof(Error);
-                should.not.exist(stats);
+            p4.stat('foo.js',function(theerr,thestats){
+                theerr.should.be.instanceof(Error);
+                should.not.exist(thestats);
                 done();
             });
         });
@@ -854,10 +869,10 @@ describe('P4', function(){
                     ].join('\n')+'\n');
             stderrs.push('');
             errs.push(null);
-            p4.recursiveStatDir('/foo/bar',function(err,stats){
-                should.not.exist(err);
+            p4.recursiveStatDir('/foo/bar',function(theerr,thestats){
+                should.not.exist(theerr);
                 expect(p4.pwd()).to.equal('/foo/bar');
-                stats.should.deep.equal(expectedStats);
+                thestats.should.deep.equal(expectedStats);
                 done();
             });
         });
@@ -987,12 +1002,12 @@ describe('P4', function(){
                 ''
             ].join('\n')+'\n');
 
-            p4.stat('foo.js',function(err,stats){
-                err.should.be.instanceof(Error);
-                should.not.exist(stats);
-                p4.recursiveStatDir(function(err,stats){
-                    err.should.be.instanceof(Error);
-                    should.not.exist(stats);
+            p4.stat('foo.js',function(theerr,thestats){
+                theerr.should.be.instanceof(Error);
+                should.not.exist(thestats);
+                p4.recursiveStatDir(function(rerr,rstats){
+                    rerr.should.be.instanceof(Error);
+                    should.not.exist(rstats);
                     done();
                 });
             });
@@ -1146,10 +1161,10 @@ describe('P4', function(){
         p4.syncDir(function(err,out){
             should.not.exist(err);
             expect(out).to.equal(stdout);
-            p4.syncDir('/path/to/dir/',function(err,out){
-                should.not.exist(err);
+            p4.syncDir('/path/to/dir/',function(theerr,theout){
+                should.not.exist(theerr);
                 expect(p4.pwd()).to.equal('/path/to/dir');
-                expect(out).to.equal(stdout);
+                expect(theout).to.equal(stdout);
                 done();
             });
         });
@@ -1164,10 +1179,10 @@ describe('P4', function(){
         p4.recursiveSyncDir(function(err,out){
             should.not.exist(err);
             expect(out).to.equal(stdout);
-            p4.recursiveSyncDir('/path/to/dir/',function(err,out){
-                should.not.exist(err);
+            p4.recursiveSyncDir('/path/to/dir/',function(theerr,theout){
+                should.not.exist(theerr);
                 expect(p4.pwd()).to.equal('/path/to/dir');
-                expect(out).to.equal(stdout);
+                expect(theout).to.equal(stdout);
                 done();
             });
         });
@@ -1200,9 +1215,9 @@ describe('P4', function(){
                 errs.push(null);
                 stderrs.push('');
                 stdouts.push(stdout);
-                p4.login(function(err,out){
-                    expect(out).to.equal(stdout);
-                    should.not.exist(err);
+                p4.login(function(theerr,theout){
+                    should.not.exist(theerr);
+                    expect(theout).to.equal(stdout);
                     done();
                 });
             });
@@ -1245,8 +1260,8 @@ describe('P4', function(){
                 stdouts.push('');
                 stderrs.push('Perforce password (P4PASSWD) invalid or unset.');
 
-                p4.stat('foo',function(err,stats){
-                    should.not.exist(err);
+                p4.stat('foo',function(theerr,stats){
+                    should.not.exist(theerr);
                     var expectedStats = {
                         depotFile: '//depot/path/to/foo.js',
                         clientFile: '/path/to/workspace/foo.js',
@@ -1286,8 +1301,8 @@ describe('P4', function(){
                 stdouts.push('');
                 stderrs.push('Perforce password (P4PASSWD) invalid or unset.');
 
-                p4.stat('foo',function(err,stats){
-                    err.should.be.instanceof(Error);
+                p4.stat('foo',function(theerr,stats){
+                    theerr.should.be.instanceof(Error);
                     should.not.exist(stats);
                     done();
                 });
